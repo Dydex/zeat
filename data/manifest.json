@@ -1,0 +1,111 @@
+{
+  "fetched_at": "2026-11-12T22:52:48Z",
+  "snapshot_date": "2026-11-12",
+  "files": [
+    {
+      "id": "intents_volume",
+      "url": "https://api.llama.fi/summary/dexs/near-intents?dataType=dailyVolume",
+      "file": "data/raw/intents_volume.json",
+      "bytes": 50589,
+      "sha256": "2fc4816f19c40b6acc21ae500854a070f6c5c694c750570faae799aec518b981"
+    },
+    {
+      "id": "intents_fees",
+      "url": "https://api.llama.fi/summary/fees/near-intents?dataType=dailyFees",
+      "file": "data/raw/intents_fees.json",
+      "bytes": 39077,
+      "sha256": "a44b4af41cc8d4687872987b7d681e42f3af75147a7217215e9b451986bd1778"
+    },
+    {
+      "id": "intents_revenue",
+      "url": "https://api.llama.fi/summary/fees/near-intents?dataType=dailyRevenue",
+      "file": "data/raw/intents_revenue.json",
+      "bytes": 36647,
+      "sha256": "f924b3d7c9b08a673a3fe9eed1f3683a27f734c8c1193a4ea25acfd54de22727"
+    },
+    {
+      "id": "thorchain_volume",
+      "url": "https://api.llama.fi/summary/dexs/thorchain-dex?dataType=dailyVolume",
+      "file": "data/raw/thorchain_volume.json",
+      "bytes": 158017,
+      "sha256": "a67f24e75217b42f90a2a673d3e1092d0d55aa68f8005a8335aae94a3ad8a688"
+    },
+    {
+      "id": "thorchain_fees",
+      "url": "https://api.llama.fi/summary/fees/thorchain-dex?dataType=dailyFees",
+      "file": "data/raw/thorchain_fees.json",
+      "bytes": 706037,
+      "sha256": "7dbd56e56167af04c8a16b98cb3a70492b178e9f56057ac7fe86dfeb2e78017a"
+    },
+    {
+      "id": "chainflip_volume",
+      "url": "https://api.llama.fi/summary/dexs/chainflip-amm?dataType=dailyVolume",
+      "file": "data/raw/chainflip_volume.json",
+      "bytes": 69653,
+      "sha256": "dae294068da1795208eea590a5c2642776ebee571b4d9473ac1a86298cd132a2"
+    },
+    {
+      "id": "chainflip_fees",
+      "url": "https://api.llama.fi/summary/fees/chainflip-amm?dataType=dailyFees",
+      "file": "data/raw/chainflip_fees.json",
+      "bytes": 75454,
+      "sha256": "4b9273f780889f142867f9e61ed45fc8c7c436f85d07b45e98e63ae69b70ed47"
+    },
+    {
+      "id": "maya_volume",
+      "url": "https://api.llama.fi/summary/dexs/maya-protocol?dataType=dailyVolume",
+      "file": "data/raw/maya_volume.json",
+      "bytes": 36267,
+      "sha256": "ec37981613b123f3729713dcb461fb3e38a15ee58f6309f9237c858c798c669b"
+    },
+    {
+      "id": "maya_fees",
+      "url": "https://api.llama.fi/summary/fees/maya-protocol?dataType=dailyFees",
+      "file": "data/raw/maya_fees.json",
+      "bytes": 33667,
+      "sha256": "9014862928063a8b2606090f82d36ca6c66d97ee2a4346c56b724472ddc329b5"
+    },
+    {
+      "id": "socket_volume",
+      "url": "https://api.llama.fi/summary/bridge-aggregators/socket-protocol?dataType=dailyBridgeVolume",
+      "file": "data/raw/socket_volume.json",
+      "bytes": 282871,
+      "sha256": "5172a339cb6cf2e677bd5e6aca82548e9817a93a82bae56d1ffda20d2e4a7ff2"
+    },
+    {
+      "id": "zerox_volume",
+      "url": "https://api.llama.fi/summary/bridge-aggregators/0x-bridge-aggregator?dataType=dailyBridgeVolume",
+      "file": "data/raw/zerox_volume.json",
+      "bytes": 240719,
+      "sha256": "8e9094885f95d50d9cc1863228679dc99590550161baf8293b845c81b6631516"
+    },
+    {
+      "id": "alldex_volume",
+      "url": "https://api.llama.fi/overview/dexs?excludeTotalDataChartBreakdown=true&dataType=dailyVolume",
+      "file": "data/raw/alldex_volume.json",
+      "bytes": 2582302,
+      "sha256": "68e8632acc30a881b9095c61aab7c9b7626bdb0c9fe59d57fd1d5c28c6d68dad"
+    },
+    {
+      "id": "lifi_volume",
+      "url": "https://api.llama.fi/summary/bridge-aggregators/li.fi-bridge-aggregator?dataType=dailyBridgeVolume",
+      "file": "data/raw/lifi_volume.json",
+      "bytes": 1602406,
+      "sha256": "966ac3fbdfd5a0bce41a032ddaed0b8dcd50c75c82ebe163128194b113b26a91"
+    },
+    {
+      "id": "rango_volume",
+      "url": "https://api.llama.fi/summary/bridge-aggregators/rango?dataType=dailyBridgeVolume",
+      "file": "data/raw/rango_volume.json",
+      "bytes": 757299,
+      "sha256": "d0bb77b1db7a37fb2d49a6b6de0f4b32f3a7ca727ffe97eaaa2acf3f5d03ec69"
+    },
+    {
+      "id": "bitget_volume",
+      "url": "https://api.llama.fi/summary/bridge-aggregators/bitget-wallet-x?dataType=dailyBridgeVolume",
+      "file": "data/raw/bitget_volume.json",
+      "bytes": 547352,
+      "sha256": "b4e72e8991704bd19b4c5725b0097abe45cf8dafea8fc8610fddd891f9d22255"
+    }
+  ]
+}
