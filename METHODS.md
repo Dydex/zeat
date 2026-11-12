@@ -137,4 +137,27 @@ Three passes: **strong moat evidence**. Two: **moderate**. One or none:
 
 ## 8. Changes after pre-registration
 
-None yet.
+Each item says whether it was made before or after the first results were
+seen. None of them changes a verdict rule or threshold.
+
+1. **Revenue zeros kept (before results).** Rule 2 treats zero as missing. For
+   the revenue series a zero means "no revenue taken", which is the quantity
+   being measured, so zeros are kept there (`parse_chart(keep_zero=True)`).
+   Volume and fee series follow rule 2 unchanged.
+2. **T3 share denominator (before results).** THORChain (May 16–Jun 21, 2026)
+   and Maya (May–Sep 2026) report no volume for weeks inside the T3 window. A
+   share whose denominator gains and loses venues would move for reasons
+   unrelated to Intents, so the share uses only competitors observed in every
+   week. That leaves Chainflip. A sensitivity slope against THORChain and
+   Chainflip, over the weeks both are observed, is also reported.
+3. **"Conservative" was wrong (after results).** Section 4 says placebo windows
+   containing other events only widen the placebo spread. In this data that is
+   false: most placebo windows fall in Intents' 2025 hypergrowth, which shifts
+   the whole placebo distribution upward rather than widening it, so a normal
+   result in a mature period can look like a loss. The pre-registered p-values
+   are still reported and still decide the verdicts. As a labelled diagnostic,
+   the report adds placebo effects plotted by date and the p-value using 2026
+   placebos only.
+4. **Robustness in percent (after results).** Robustness numbers in
+   `results.json` are expressed as percentage effects (`*_pct`) instead of log
+   points, so they read the same as the headline effects.
