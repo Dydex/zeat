@@ -1,4 +1,4 @@
-# Moat Test: is NEAR Intents' revenue defensible?
+# Zeat: is NEAR Intents' revenue defensible?
 
 **NEAR HACKATHON 2026 · Investment Thesis track**
 

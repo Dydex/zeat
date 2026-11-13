@@ -472,9 +472,9 @@ addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationF
 TEMPLATE = """<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Moat Test: NEAR Intents</title>
+<title>Zeat: is NEAR Intents' revenue defensible?</title>
 <meta name="description" content="Is NEAR Intents' revenue defensible? Three pre-registered causal tests against a competitor control, checked on-chain, rebuilt from public data with one command.">
-<meta property="og:title" content="Moat Test: is NEAR Intents' revenue defensible?">
+<meta property="og:title" content="Zeat: is NEAR Intents' revenue defensible?">
 <meta property="og:description" content="{overall} ({passes} of 3 pre-registered tests passed). Every number rebuilds from public data with one command.">
 <meta property="og:type" content="article">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -489,7 +489,7 @@ TEMPLATE = """<!doctype html>
 <article>
 
 <header>
-<p class="kicker">Research note · NEAR HACKATHON 2026 · Investment Thesis track</p>
+<p class="kicker">Zeat · Research note · NEAR HACKATHON 2026 · Investment Thesis track</p>
 <h1>Is NEAR Intents' revenue defensible?</h1>
 <p class="dek">{dek}</p>
 <p class="byline"><b>Dydex</b> · Data snapshot {snapshot} · <a href="{repo}">Code</a> ·
