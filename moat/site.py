@@ -369,7 +369,9 @@ code{font:.84em var(--mono);background:var(--tint);padding:1px 5px;border-radius
 pre{background:var(--tint);border-radius:6px;padding:16px 18px;overflow-x:auto;font-size:14px;line-height:1.6}
 pre code,td code{background:none;padding:0}
 footer{margin-top:80px;padding-top:18px;border-top:1px solid var(--line);font:13.5px/1.6 var(--sans);color:var(--faint)}
-@media (max-width:1100px){
+@media (max-width:1100px) and (min-width:821px){
+.page{grid-template-columns:168px minmax(0,700px);gap:40px}}
+@media (max-width:820px){
 .page{grid-template-columns:minmax(0,700px);gap:0;padding-top:40px}
 .toc{display:none}
 .toc-inline{display:block;margin:34px 0 0;font:15px/1.5 var(--sans)}
@@ -378,24 +380,32 @@ footer{margin-top:80px;padding-top:18px;border-top:1px solid var(--line);font:13
 .toc-inline .n{min-width:12px;color:var(--faint)}
 html{scroll-padding-top:64px}
 .mnav{display:block;position:sticky;top:0;z-index:10;font:15px/1.4 var(--sans);
-background:color-mix(in srgb,var(--bg) 94%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+background:var(--bg);
 border-bottom:1px solid var(--line)}
 .mnav details{border:0;margin:0}
-.mnav summary{padding:0 16px;min-height:50px;gap:12px;font:15px/1.4 var(--sans)}
+.mnav summary{padding:0 16px;min-height:52px;gap:12px;font:15px/1.4 var(--sans)}
 .mnav summary::before{display:none}
-.mnav summary .mnav-k{font:600 11px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.mnav summary .mnav-btn{display:inline-flex;align-items:center;gap:7px;flex:none;padding:7px 13px 7px 11px;
+border:1px solid var(--rule);border-radius:999px;background:var(--card);color:var(--fg);font:600 14px/1 var(--sans)}
+.mnav-btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round}
 .mnav summary .mnav-cur{flex:1;min-width:0;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mnav-ic{width:9px;height:9px;border-right:1.8px solid var(--soft);border-bottom:1.8px solid var(--soft);
-transform:rotate(45deg);margin:-4px 4px 0 0;transition:transform .15s}
-.mnav details[open] .mnav-ic{transform:rotate(225deg);margin-top:4px}
-.mnav ol{list-style:none;margin:0;padding:0 16px 8px;max-height:70vh;overflow-y:auto;position:absolute;left:0;right:0;top:100%;
-background:var(--bg);border-top:1px solid var(--line);border-bottom:1px solid var(--line);box-shadow:0 12px 24px rgba(0,0,0,.12)}
-.mnav li a{display:flex;gap:12px;align-items:center;min-height:46px;color:var(--fg);text-decoration:none;
-border-bottom:1px solid var(--line)}
+.mnav details[open]::before{content:"";position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:1}
+.mnav-drawer{position:fixed;top:0;left:0;bottom:0;width:min(84vw,320px);z-index:2;background:var(--bg);
+border-right:1px solid var(--line);box-shadow:8px 0 28px rgba(0,0,0,.18);overflow-y:auto;
+padding:0 20px 28px;animation:mnav-in .18s ease-out}
+@keyframes mnav-in{from{transform:translateX(-100%)}to{transform:none}}
+.mnav-head{display:flex;align-items:center;justify-content:space-between;min-height:56px;
+border-bottom:1px solid var(--line);font:600 11.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.mnav-x{appearance:none;border:0;background:none;color:var(--fg);font:22px/1 var(--sans);width:44px;height:44px;
+margin-right:-12px;cursor:pointer}
+.mnav ol{list-style:none;margin:0;padding:6px 0 0}
+.mnav li a{display:flex;gap:14px;align-items:center;min-height:48px;color:var(--fg);text-decoration:none;
+border-bottom:1px solid var(--line);font-size:16px}
 .mnav li:last-child a{border-bottom:0}
 .mnav li a.on{font-weight:600} .mnav li a.on .n{color:var(--fg)}
 .mnav .n{min-width:14px;color:var(--faint);font-variant-numeric:tabular-nums}
-.mnav-bar{height:2px} .mnav-bar i{display:block;height:100%;width:0;background:var(--c-primary)}}
+.mnav-bar{height:2px} .mnav-bar i{display:block;height:100%;width:0;background:var(--c-primary)}
+@media (prefers-reduced-motion:reduce){.mnav-drawer{animation:none}}}
 @media (max-width:600px){
 body{font-size:17px}
 .page{padding:28px 16px 64px}
@@ -440,6 +450,9 @@ document.querySelectorAll('svg.chart[data-hover]').forEach(function(svg){
 var links=[].slice.call(document.querySelectorAll('nav.toc a,.mnav a'));
 var menu=document.querySelector('.mnav details'),cur=document.querySelector('.mnav-cur');
 document.querySelectorAll('.mnav a').forEach(function(a){a.addEventListener('click',function(){menu.open=false})});
+if(menu){menu.addEventListener('click',function(e){if(e.target===menu)menu.open=false});
+  var x=menu.querySelector('.mnav-x');if(x)x.addEventListener('click',function(){menu.open=false});
+  addEventListener('keydown',function(e){if(e.key==='Escape')menu.open=false})}
 if('IntersectionObserver' in window&&links.length){
   var byId={};links.forEach(function(a){var k=a.getAttribute('href').slice(1);(byId[k]=byId[k]||[]).push(a)});
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&byId[e.target.id]){
@@ -467,8 +480,9 @@ TEMPLATE = """<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap">
 <style>""" + CSS.replace("{", "{{").replace("}", "}}") + """</style></head><body>
-<nav class="mnav" aria-label="Contents"><details><summary><span class="mnav-k">Contents</span>
-<span class="mnav-cur">Abstract</span><span class="mnav-ic" aria-hidden="true"></span></summary><ol>{toc}</ol></details>
+<nav class="mnav" aria-label="Contents"><details><summary><span class="mnav-btn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg>Menu</span>
+<span class="mnav-cur">Abstract</span></summary>
+<div class="mnav-drawer"><div class="mnav-head">Contents<button class="mnav-x" type="button" aria-label="Close menu">×</button></div><ol>{toc}</ol></div></details>
 <div class="mnav-bar" aria-hidden="true"><i></i></div></nav>
 <div class="page">
 <nav class="toc" aria-label="Contents"><p>Contents</p><ol>{toc}</ol></nav>
