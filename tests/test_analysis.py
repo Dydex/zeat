@@ -6,8 +6,8 @@ import math
 import random
 import unittest
 
-from moat import analysis
-from moat.fetch import ROOT
+from zeat import analysis
+from zeat.fetch import ROOT
 
 D = dt.date
 

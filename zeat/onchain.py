@@ -13,7 +13,7 @@ Design:
   It is saved to data/onchain/plan.json.
 - The *sample* is one compact JSON line per block in data/onchain/blocks.jsonl,
   with the block hash, so anyone can re-fetch and compare
-  (`python3 -m moat verify-onchain`). Blocks are immutable, so a re-fetch must
+  (`python3 -m zeat verify-onchain`). Blocks are immutable, so a re-fetch must
   match exactly.
 - Fetching is resumable and polite (low concurrency, backoff on HTTP 429).
 """

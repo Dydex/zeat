@@ -188,3 +188,7 @@ seen. None of them changes a verdict rule or threshold.
    freshly fetched data under the same rules, labelled as a live re-test. The
    pinned, pre-registered build stays in the repository and at `/pinned/` on
    the site.
+7. **Code package renamed (after results).** The project was renamed Zeat, and
+   the code package `moat/` was renamed `zeat/` (so `python3 -m zeat build`).
+   Paths above that say `moat/` now live under `zeat/`. No logic, data or
+   threshold changed; `results/results.json` is byte-identical.

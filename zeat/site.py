@@ -201,7 +201,7 @@ def render(res):
         f"<td><code>{e['sha256'][:12]}</code></td></tr>"
         for e in manifest["files"])
 
-    live = os.environ.get("MOAT_LIVE") == "1"
+    live = os.environ.get("ZEAT_LIVE") == "1"
     banner = (f"<aside class='live'><b>Live rebuild</b> on public data fetched {html.escape(manifest['fetched_at'])}. "
               "The pre-registered analysis is the pinned snapshot in the repository "
               "(<a href='pinned/'>view the pinned build</a>). Verdicts here re-test the same rules on newer data.</aside>"
@@ -669,9 +669,9 @@ hashes in Section 8 pin the exact version analysed.</li>
 <li>The control pool is small (6 clean series), so placebo-in-space p-values cannot go below about 1/6.</li>
 <li>The on-chain figures come from a sample of blocks, not a full census, so each weekly estimate carries
 sampling error (bootstrap intervals are in <code>results.json</code>). The sample is pinned in
-<code>data/onchain/</code> and can be checked against the chain with <code>python3 -m moat verify-onchain</code>.</li>
+<code>data/onchain/</code> and can be checked against the chain with <code>python3 -m zeat verify-onchain</code>.</li>
 <li>Six weeks of post-exploit data is the most the snapshot allows. T2 should be re-run as data arrives;
-<code>python3 -m moat refresh</code> then <code>build</code> does exactly that, and a daily job republishes this page on fresh data.</li>
+<code>python3 -m zeat refresh</code> then <code>build</code> does exactly that, and a daily job republishes this page on fresh data.</li>
 </ul>
 </section>
 
@@ -680,8 +680,8 @@ sampling error (bootstrap intervals are in <code>results.json</code>). The sampl
 <p>Python 3.10+, standard library only, no API keys. The build is offline and byte-deterministic: it must
 reproduce this page, <code>results.json</code> and THESIS.md exactly.</p>
 <pre><code>git clone {repo} &amp;&amp; cd zeat
-python3 -m moat verify     # data files match their sha256 hashes
-python3 -m moat build      # rebuilds every number, this page and THESIS.md (~40 s)
+python3 -m zeat verify     # data files match their sha256 hashes
+python3 -m zeat build      # rebuilds every number, this page and THESIS.md (~40 s)
 git status --short         # empty: the rebuild matches the committed files
 python3 -m unittest        # known-answer and byte-exact rebuild tests</code></pre>
 <details><summary>Data sources and hashes <span>snapshot fetched {fetched}</span></summary><div>
@@ -690,7 +690,7 @@ python3 -m unittest        # known-answer and byte-exact rebuild tests</code></p
 </section>
 
 <footer>Not financial advice. Built at NEAR HACKATHON 2026. Every number on this page is filled in by
-<code>python3 -m moat build</code> from <a href="results.json">results.json</a>; none is typed by hand.</footer>
+<code>python3 -m zeat build</code> from <a href="results.json">results.json</a>; none is typed by hand.</footer>
 </article></div>
 <script>""" + JS.replace("{", "{{").replace("}", "}}") + """</script>
 </body></html>

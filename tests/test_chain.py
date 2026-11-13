@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from moat import chain, onchain
+from zeat import chain, onchain
 
 
 def block(height, ts_ms, receipts, supply="1000000000000000000000000000000000"):

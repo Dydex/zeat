@@ -1,9 +1,9 @@
-"""Command line: python3 -m moat [build|refresh|verify]."""
+"""Command line: python3 -m zeat [build|refresh|verify]."""
 
 import sys
 import time
 
-USAGE = """usage: python3 -m moat <command>
+USAGE = """usage: python3 -m zeat <command>
 
   build    verify the snapshot hashes, run the analysis, write
            results/results.json, site/index.html and THESIS.md (offline)

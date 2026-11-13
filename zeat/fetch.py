@@ -1,6 +1,6 @@
 """Download every source into data/raw/ and record a hashed manifest.
 
-`python3 -m moat refresh` is the only network step. `build` works offline from
+`python3 -m zeat refresh` is the only network step. `build` works offline from
 the committed snapshot, and refuses to run if a file no longer matches its hash.
 """
 
@@ -16,7 +16,7 @@ from .sources import SOURCES
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 MANIFEST = ROOT / "data" / "manifest.json"
-USER_AGENT = "moat-test/1.0 (reproducible research script)"
+USER_AGENT = "zeat/1.0 (reproducible research script)"
 
 
 def sha256(data: bytes) -> str:

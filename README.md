@@ -13,11 +13,11 @@ gets a placebo test.
 >
 > | Do | See |
 > |---|---|
-> | `python3 -m moat verify` | `ok: 16 files match the manifest (snapshot 2026-11-12)` |
-> | `python3 -m moat build` (offline, ~40 s) | `T1 PASS`, `T2 FAIL`, `T3 FAIL`, `verdict: Weak moat evidence (1/3)` |
+> | `python3 -m zeat verify` | `ok: 16 files match the manifest (snapshot 2026-11-12)` |
+> | `python3 -m zeat build` (offline, ~40 s) | `T1 PASS`, `T2 FAIL`, `T3 FAIL`, `verdict: Weak moat evidence (1/3)` |
 > | `git status --short` | no output: the build reproduced the committed results, dashboard and THESIS.md byte for byte |
 > | `python3 -m unittest` | `OK` (25 tests: known-answer, injected-effect recovery, byte-exact rebuild) |
-> | `python3 -m moat verify-onchain 5` | `verified 5/5 sampled blocks against the chain` (needs internet) |
+> | `python3 -m zeat verify-onchain 5` | `verified 5/5 sampled blocks against the chain` (needs internet) |
 > | `git log --reverse --format='%h %ad %s' --date=iso` | METHODS.md (the pre-registration) was committed before any analysis code or result |
 > | open `site/index.html` or <https://dydex.github.io/zeat/> | the research note: abstract and results table (Table 1), one numbered section per test with its figures and placebo tests, the on-chain check, the NEAR issuance comparison. Hover any chart for exact values |
 
@@ -46,12 +46,12 @@ issuance.
 ## Run it
 
 ```bash
-python3 -m moat build     # offline, ~40s: verifies data hashes, runs T1-T3 and the on-chain analyses,
+python3 -m zeat build     # offline, ~40s: verifies data hashes, runs T1-T3 and the on-chain analyses,
                           # writes results/results.json, site/index.html, THESIS.md
 python3 -m unittest       # the test suite, incl. known-answer checks and a byte-exact rebuild
-python3 -m moat refresh   # optional: fetch fresh public data, then build again
-python3 -m moat verify-onchain   # re-fetch 20 random sampled blocks, check they match the chain
-python3 -m moat onchain   # optional, slow: re-plan and re-fetch the whole block sample
+python3 -m zeat refresh   # optional: fetch fresh public data, then build again
+python3 -m zeat verify-onchain   # re-fetch 20 random sampled blocks, check they match the chain
+python3 -m zeat onchain   # optional, slow: re-plan and re-fetch the whole block sample
 ```
 
 The dashboard is published by CI to GitHub Pages. Pushes publish the pinned build. A daily job
@@ -84,15 +84,15 @@ Every number in THESIS.md and on the dashboard is filled in by the build from
 ## Layout
 
 ```
-moat/sources.py    every external input, with its role
-moat/fetch.py      download + sha256 manifest + verification
-moat/data.py       cleaning rules and event-week aggregation
-moat/stats.py      simplex projection, synthetic control, OLS, block bootstrap
-moat/analysis.py   T1, T2, T3, placebos, robustness, verdicts
-moat/onchain.py    block sampling plan, fetcher, block summaries, verification
-moat/chain.py      on-chain analyses and the NEAR issuance comparison
-moat/site.py       dashboard (inline SVG charts, light/dark)
-moat/thesis.py     THESIS.md
+zeat/sources.py    every external input, with its role
+zeat/fetch.py      download + sha256 manifest + verification
+zeat/data.py       cleaning rules and event-week aggregation
+zeat/stats.py      simplex projection, synthetic control, OLS, block bootstrap
+zeat/analysis.py   T1, T2, T3, placebos, robustness, verdicts
+zeat/onchain.py    block sampling plan, fetcher, block summaries, verification
+zeat/chain.py      on-chain analyses and the NEAR issuance comparison
+zeat/site.py       dashboard (inline SVG charts, light/dark)
+zeat/thesis.py     THESIS.md
 tests/             unit, known-answer and reproducibility tests
 ```
 

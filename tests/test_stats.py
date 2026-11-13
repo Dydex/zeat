@@ -2,7 +2,7 @@ import math
 import random
 import unittest
 
-from moat import stats
+from zeat import stats
 
 
 class SimplexProjection(unittest.TestCase):

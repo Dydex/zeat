@@ -25,12 +25,12 @@ jobs:
         with:
           python-version: "3.12"
       - name: Verify snapshot hashes
-        run: python3 -m moat verify
+        run: python3 -m zeat verify
       - name: Tests (includes byte-exact rebuild of results.json)
         run: python3 -m unittest -v
       - name: Build from the pinned snapshot; nothing may change
         run: |
-          python3 -m moat build
+          python3 -m zeat build
           git diff --exit-code -- results THESIS.md site
 
   pages:
@@ -48,11 +48,11 @@ jobs:
       - name: Pinned build (pushes) or live rebuild on fresh data (schedule)
         run: |
           mkdir -p public
-          python3 -m moat build
+          python3 -m zeat build
           cp -r site public/pinned
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            python3 -m moat refresh
-            MOAT_LIVE=1 python3 -m moat build
+            python3 -m zeat refresh
+            ZEAT_LIVE=1 python3 -m zeat build
           fi
           cp -r site/. public/
       - uses: actions/upload-pages-artifact@v3

@@ -1,7 +1,7 @@
 import datetime as dt
 import unittest
 
-from moat import data
+from zeat import data
 
 D = dt.date
 
