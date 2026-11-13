@@ -93,4 +93,10 @@ tests/             unit, known-answer and reproducibility tests
 - The placebo test turned out to be biased by Intents' 2025 hypergrowth, not conservative as
   METHODS.md first claimed. This is disclosed, and a 2026-only diagnostic is reported alongside.
 
+## Tools
+
+Code and docs were written with AI coding assistance (Claude Code). Every number is computed
+by the code from the pinned public data; nothing is typed by hand. All code was written during
+the hackathon window (November 2026); no pre-existing libraries are used.
+
 Not financial advice. MIT licence.
