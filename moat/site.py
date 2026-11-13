@@ -16,7 +16,7 @@ from .site_chain import sections
 
 D = dt.date
 EPOCH = D(2024, 1, 1)
-REPO = "https://github.com/Dydex/near"
+REPO = "https://github.com/Dydex/zeat"
 
 
 def ordinal(d):
@@ -679,7 +679,7 @@ sampling error (bootstrap intervals are in <code>results.json</code>). The sampl
 <h2><span class="secnum">8</span>Reproduce</h2>
 <p>Python 3.10+, standard library only, no API keys. The build is offline and byte-deterministic: it must
 reproduce this page, <code>results.json</code> and THESIS.md exactly.</p>
-<pre><code>git clone {repo} &amp;&amp; cd near
+<pre><code>git clone {repo} &amp;&amp; cd zeat
 python3 -m moat verify     # data files match their sha256 hashes
 python3 -m moat build      # rebuilds every number, this page and THESIS.md (~40 s)
 git status --short         # empty: the rebuild matches the committed files

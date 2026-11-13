@@ -187,7 +187,7 @@ h1{font-size:33px} .dek{font-size:18.5px} h2{font-size:25px} h3{font-size:19px}
 <p class="kicker">Research note · NEAR HACKATHON 2026 · Investment Thesis track</p>
 <h1>Is NEAR Intents' revenue defensible?</h1>
 <p class="dek">Three pre-registered causal tests of NEAR Intents' moat, each against a control built from competitors, checked against 3,346 NEAR blocks read directly from the chain.</p>
-<p class="byline"><b>Dydex</b> · Data snapshot Nov 12, 2026 · <a href="https://github.com/Dydex/near">Code</a> ·
+<p class="byline"><b>Dydex</b> · Data snapshot Nov 12, 2026 · <a href="https://github.com/Dydex/zeat">Code</a> ·
 <a href="METHODS.md">Pre-registration</a> · <a href="THESIS.md">Thesis</a> · <a href="results.json">All numbers (JSON)</a></p>
 
 </header>
@@ -457,7 +457,7 @@ sampling error (bootstrap intervals are in <code>results.json</code>). The sampl
 <h2><span class="secnum">8</span>Reproduce</h2>
 <p>Python 3.10+, standard library only, no API keys. The build is offline and byte-deterministic: it must
 reproduce this page, <code>results.json</code> and THESIS.md exactly.</p>
-<pre><code>git clone https://github.com/Dydex/near &amp;&amp; cd near
+<pre><code>git clone https://github.com/Dydex/zeat &amp;&amp; cd zeat
 python3 -m moat verify     # data files match their sha256 hashes
 python3 -m moat build      # rebuilds every number, this page and THESIS.md (~40 s)
 git status --short         # empty: the rebuild matches the committed files

@@ -7,7 +7,7 @@ question: **can it keep earning it?** A synthetic control built from competitors
 counterfactual, so market-wide moves are never mistaken for NEAR-specific ones. Each claim
 gets a placebo test.
 
-**Live research note:** <https://dydex.github.io/near/> · **Thesis:** [THESIS.md](THESIS.md) · **Pre-registration:** [METHODS.md](METHODS.md)
+**Live research note:** <https://dydex.github.io/zeat/> · **Thesis:** [THESIS.md](THESIS.md) · **Pre-registration:** [METHODS.md](METHODS.md)
 
 > **For judges: a two-minute check.** Needs Python 3.10+ and nothing else (no installs, no keys).
 >
@@ -19,7 +19,7 @@ gets a placebo test.
 > | `python3 -m unittest` | `OK` (25 tests: known-answer, injected-effect recovery, byte-exact rebuild) |
 > | `python3 -m moat verify-onchain 5` | `verified 5/5 sampled blocks against the chain` (needs internet) |
 > | `git log --reverse --format='%h %ad %s' --date=iso` | METHODS.md (the pre-registration) was committed before any analysis code or result |
-> | open `site/index.html` or <https://dydex.github.io/near/> | the research note: abstract and results table (Table 1), one numbered section per test with its figures and placebo tests, the on-chain check, the NEAR issuance comparison. Hover any chart for exact values |
+> | open `site/index.html` or <https://dydex.github.io/zeat/> | the research note: abstract and results table (Table 1), one numbered section per test with its figures and placebo tests, the on-chain check, the NEAR issuance comparison. Hover any chart for exact values |
 
 | Test | Event | Question |
 |---|---|---|
