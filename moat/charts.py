@@ -5,10 +5,11 @@ themes. Every chart carries a <title> and <desc> for screen readers.
 """
 
 import html
+import json
 import math
 
 W, H = 720, 300
-M = dict(l=58, r=16, t=14, b=34)
+M = dict(l=66, r=16, t=30, b=34)
 
 # Series styles map to CSS variables in site.py.
 _CLIP = 0
@@ -50,10 +51,29 @@ def log_ticks(lo, hi):
     return out
 
 
+def _hover_attr(xs_px, rows, top, bottom):
+    """Data for the page's hover script: crosshair x positions and tooltip rows."""
+    d = dict(w=W, t=top, b=bottom, x=[round(x, 1) for x in xs_px], rows=rows)
+    return f' data-hover="{html.escape(json.dumps(d, separators=(",", ":")), quote=True)}"'
+
+
+def _event_label(x, label, e):
+    if x > W - M["r"] - 40:
+        return f'<text x="{x + 4:.1f}" y="{M["t"] - 9}" class="event-label" text-anchor="end">{e(label)}</text>'
+    return f'<text x="{x:.1f}" y="{M["t"] - 9}" class="event-label" text-anchor="middle">{e(label)}</text>'
+
+
+def _legend(items):
+    if len(items) < 2:
+        return ""
+    return '<div class="legend">' + "".join(items) + "</div>"
+
+
 def line_chart(series, title, desc, x_fmt=str, y_fmt=str, log_y=False,
-               vlines=(), hline=None, x_ticks=None, y_range=None):
+               vlines=(), hline=None, x_ticks=None, y_range=None, x_hover=None, y_hover=None):
     """series: list of dict(name, points=[(x, y)], style, width=2, dash=None,
-    opacity=1, legend=True). x and y are numbers; y in linear units."""
+    opacity=1, legend=True, hover=(style != muted), short=name). x and y are
+    numbers; y in linear units. x_hover/y_hover format the tooltip."""
     pts = [(x, y) for s in series for x, y in s["points"] if y is not None]
     xs = [x for x, _ in pts]
     ys = [y for _, y in pts]
@@ -85,7 +105,15 @@ def line_chart(series, title, desc, x_fmt=str, y_fmt=str, log_y=False,
     global _CLIP
     _CLIP += 1
     cid = f"clip{_CLIP}"
-    out = [f'<svg viewBox="0 0 {W} {H}" role="img" class="chart">',
+    hov = [sr for sr in series if sr.get("hover", sr["style"] != "muted")]
+    xh, yh = x_hover or x_fmt, y_hover or y_fmt
+    lookup = [dict((x, y) for x, y in sr["points"] if y is not None) for sr in hov]
+    hx = sorted({x for lk in lookup for x in lk if x0 <= x <= x1})
+    rows = [[xh(x), [[sr.get("short", sr["name"]), STYLES[sr["style"]], yh(lk[x]),
+                      round(min(max(sy(lk[x]), M["t"]), H - M["b"]), 1)]
+                     for sr, lk in zip(hov, lookup) if x in lk]] for x in hx]
+    attr = _hover_attr([sx(x) for x in hx], rows, M["t"], H - M["b"]) if hx else ""
+    out = [f'<svg viewBox="0 0 {W} {H}" role="img" class="chart"{attr}>',
            f'<title>{e(title)}</title><desc>{e(desc)}</desc>',
            f'<defs><clipPath id="{cid}"><rect x="{M["l"]}" y="{M["t"]}" width="{pw}" height="{ph}"/></clipPath></defs>']
     # grid + y labels
@@ -103,7 +131,7 @@ def line_chart(series, title, desc, x_fmt=str, y_fmt=str, log_y=False,
     for x, label in vlines:
         if x0 <= x <= x1:
             out.append(f'<line x1="{sx(x):.1f}" x2="{sx(x):.1f}" y1="{M["t"]}" y2="{H - M["b"]}" class="event"/>')
-            out.append(f'<text x="{sx(x) + 5:.1f}" y="{M["t"] + 12}" class="event-label">{e(label)}</text>')
+            out.append(_event_label(sx(x), label, e))
     out.append(f'<g clip-path="url(#{cid})">')
     for s in series:
         segs, cur = [], []
@@ -126,13 +154,13 @@ def line_chart(series, title, desc, x_fmt=str, y_fmt=str, log_y=False,
                        f' stroke-opacity="{s.get("opacity", 1)}" stroke-linejoin="round"{dash}'
                        f' points="{" ".join(seg)}"/>')
     out.append("</g></svg>")
-    legend = "".join(
+    legend = _legend([
         f'<span class="key"><i style="background:{STYLES[s["style"]]};opacity:{max(s.get("opacity", 1), .6)}"></i>{e(s["name"])}</span>'
-        for s in series if s.get("legend", True))
-    return f'<figure>{"".join(out)}<figcaption class="legend">{legend}</figcaption></figure>'
+        for s in series if s.get("legend", True)])
+    return f'<div class="plot">{"".join(out)}{legend}</div>'
 
 
-def dot_chart(points, title, desc, x_fmt, y_fmt, highlight=None, hline=None, split=None):
+def dot_chart(points, title, desc, x_fmt, y_fmt, highlight=None, hline=None, split=None, x_hover=None):
     """Scatter of (x, y) with an optional highlighted real value as a line."""
     series = [dict(name="Placebo (fake event date)", style="muted",
                    points=[], width=0)]
@@ -146,7 +174,13 @@ def dot_chart(points, title, desc, x_fmt, y_fmt, highlight=None, hline=None, spl
     sx = lambda x: M["l"] + (x - x0) / ((x1 - x0) or 1) * pw
     sy = lambda y: M["t"] + (1 - (y - y0) / (y1 - y0)) * ph
     e = html.escape
-    out = [f'<svg viewBox="0 0 {W} {H}" role="img" class="chart">',
+    xh = x_hover or x_fmt
+    pts = sorted(points)
+    rows = [[xh(x), [["Placebo effect", "var(--c-muted)", y_fmt(y), round(sy(y), 1)]]
+             + ([["Real effect", "var(--c-primary)", y_fmt(highlight), round(sy(highlight), 1)]]
+                if highlight is not None else [])] for x, y in pts]
+    attr = _hover_attr([sx(x) for x, _ in pts], rows, M["t"], H - M["b"])
+    out = [f'<svg viewBox="0 0 {W} {H}" role="img" class="chart"{attr}>',
            f'<title>{e(title)}</title><desc>{e(desc)}</desc>']
     for t in nice_ticks(y0, y1):
         if y0 <= t <= y1:
@@ -159,7 +193,7 @@ def dot_chart(points, title, desc, x_fmt, y_fmt, highlight=None, hline=None, spl
         out.append(f'<line x1="{M["l"]}" x2="{W - M["r"]}" y1="{sy(hline):.1f}" y2="{sy(hline):.1f}" class="zero"/>')
     if split is not None and x0 <= split[0] <= x1:
         out.append(f'<line x1="{sx(split[0]):.1f}" x2="{sx(split[0]):.1f}" y1="{M["t"]}" y2="{H - M["b"]}" class="event"/>')
-        out.append(f'<text x="{sx(split[0]) + 5:.1f}" y="{M["t"] + 12}" class="event-label">{e(split[1])}</text>')
+        out.append(_event_label(sx(split[0]), split[1], e))
     for x, y in points:
         out.append(f'<circle cx="{sx(x):.1f}" cy="{sy(y):.1f}" r="3.2" fill="var(--c-muted)"/>')
     if highlight is not None:
@@ -168,4 +202,4 @@ def dot_chart(points, title, desc, x_fmt, y_fmt, highlight=None, hline=None, spl
     out.append("</svg>")
     legend = ('<span class="key"><i style="background:var(--c-muted)"></i>Placebo effect at a fake event date</span>'
               '<span class="key"><i style="background:var(--c-primary)"></i>Real effect</span>')
-    return f'<figure>{"".join(out)}<figcaption class="legend">{legend}</figcaption></figure>'
+    return f'<div class="plot">{"".join(out)}<div class="legend">{legend}</div></div>'

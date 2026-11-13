@@ -64,7 +64,7 @@ synthetic control built from competitors:
 
 ## Checked on-chain
 
-DefiLlama is an aggregator, so the build also reads 3346 NEAR blocks directly (keyless, from
+DefiLlama is an aggregator, so the build also reads 3,346 NEAR blocks directly (keyless, from
 neardata.xyz) and counts what `intents.near` executed in each.
 
 - **The aggregator loosely tracks the chain.** Weekly on-chain executed intents and DefiLlama volume

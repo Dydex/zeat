@@ -7,7 +7,7 @@ question: **can it keep earning it?** A synthetic control built from competitors
 counterfactual, so market-wide moves are never mistaken for NEAR-specific ones. Each claim
 gets a placebo test.
 
-**Live dashboard:** <https://dydex.github.io/near/> · **Thesis:** [THESIS.md](THESIS.md) · **Pre-registration:** [METHODS.md](METHODS.md)
+**Live research note:** <https://dydex.github.io/near/> · **Thesis:** [THESIS.md](THESIS.md) · **Pre-registration:** [METHODS.md](METHODS.md)
 
 > **For judges: a two-minute check.** Needs Python 3.10+ and nothing else (no installs, no keys).
 >
@@ -19,7 +19,7 @@ gets a placebo test.
 > | `python3 -m unittest` | `OK` (25 tests: known-answer, injected-effect recovery, byte-exact rebuild) |
 > | `python3 -m moat verify-onchain 5` | `verified 5/5 sampled blocks against the chain` (needs internet) |
 > | `git log --reverse --format='%h %ad %s' --date=iso` | METHODS.md (the pre-registration) was committed before any analysis code or result |
-> | open `site/index.html` or <https://dydex.github.io/near/> | the dashboard: verdict cards, each test's chart and placebo test, the on-chain check, the NEAR issuance comparison |
+> | open `site/index.html` or <https://dydex.github.io/near/> | the research note: abstract and results table (Table 1), one numbered section per test with its figures and placebo tests, the on-chain check, the NEAR issuance comparison. Hover any chart for exact values |
 
 | Test | Event | Question |
 |---|---|---|
@@ -29,7 +29,7 @@ gets a placebo test.
 
 - **[THESIS.md](THESIS.md):** the claim, evidence for and against, and what would change my mind.
 - **[METHODS.md](METHODS.md):** pre-registered rules and thresholds, committed before any result existed. Section 8 lists every later change, with reasons.
-- **`site/index.html`:** the dashboard. Every chart has its source and one plain sentence.
+- **`site/index.html`:** the research note (the hosted page). Numbered sections and figures; every figure has a title, its takeaway and its source.
 - **[results/results.json](results/results.json):** every number, machine-readable.
 - **On-chain layer:** about 3,350 NEAR blocks are read directly, with no keys. They check the
   aggregator against the chain, look for the Oct 1 pause, measure solver concentration from

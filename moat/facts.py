@@ -154,7 +154,7 @@ def chain_facts(res):
     r_lvl, r_chg = v["corr_levels"], v["corr_changes"]
     agree = "tracks" if (r_chg or 0) >= 0.5 else "loosely tracks" if (r_chg or 0) >= 0.2 else "does not track"
     f = dict(
-        has_chain=True, blocks=c["blocks_sampled"], blocks_planned=c["blocks_planned"],
+        has_chain=True, blocks=f"{c['blocks_sampled']:,}", blocks_planned=c["blocks_planned"],
         val_weeks=v["weeks"], val_r_levels=f"{r_lvl:.2f}" if r_lvl is not None else "n/a",
         val_r_changes=f"{r_chg:.2f}" if r_chg is not None else "n/a", val_agree=agree,
         ex_chain=spct(e["onchain_change"]), ex_llama=spct(e["defillama_change"]),
