@@ -3,11 +3,18 @@ name: ci
 on:
   push:
   pull_request:
+  schedule:
+    - cron: "17 6 * * *"   # daily live rebuild of the dashboard
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   test:
@@ -21,22 +28,35 @@ jobs:
         run: python3 -m moat verify
       - name: Tests (includes byte-exact rebuild of results.json)
         run: python3 -m unittest -v
-      - name: Build and check nothing changed
+      - name: Build from the pinned snapshot; nothing may change
         run: |
           python3 -m moat build
           git diff --exit-code -- results THESIS.md site
-      - uses: actions/upload-pages-artifact@v3
-        if: github.ref == 'refs/heads/main'
-        with:
-          path: site
 
   pages:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: test
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pinned build (pushes) or live rebuild on fresh data (schedule)
+        run: |
+          mkdir -p public
+          python3 -m moat build
+          cp -r site public/pinned
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            python3 -m moat refresh
+            MOAT_LIVE=1 python3 -m moat build
+          fi
+          cp -r site/. public/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
       - id: deploy
         uses: actions/deploy-pages@v4

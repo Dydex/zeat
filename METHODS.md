@@ -161,3 +161,30 @@ seen. None of them changes a verdict rule or threshold.
 4. **Robustness in percent (after results).** Robustness numbers in
    `results.json` are expressed as percentage effects (`*_pct`) instead of log
    points, so they read the same as the headline effects.
+5. **On-chain sample and NEAR economics added (after results).** These are
+   corroborating, descriptive analyses. They do not enter any T1–T3 verdict.
+   - *Block sample* (`moat/onchain.py`): a deterministic sample of NEAR blocks
+     read keylessly from neardata.xyz. Week boundaries are block heights found by
+     timestamp search, within 15 minutes. Inside each week, heights are drawn
+     uniformly with seed 20261112: 80 a week from 2026-04-02 to 2026-11-11 and 40
+     a week from 2025-12-29 to 2026-04-19. Blocks are read every 30 minutes from
+     2026-09-30 to 2026-10-02, plus two header blocks a year apart for supply.
+     Each block is reduced to a summary with its hash
+     (`data/onchain/blocks.jsonl`), and `verify-onchain` re-fetches a random
+     subset to check it.
+   - *Uses:* (a) the weekly correlation of on-chain executed intents with
+     DefiLlama volume, in levels and in changes; (b) the exploit before/after on
+     both measures; (c) timing of the Oct 1 pause, with the longest run of empty
+     sampled blocks benchmarked against the share of empty blocks before Oct 1
+     (exact probability of such a run anywhere in the sample); (d) repeat-counterparty
+     concentration in `token_diff` events over the last 8 weeks; (e) exact
+     annual NEAR issuance from `total_supply`, set against annualised Intents
+     revenue at the 30-day average price (CoinGecko, added to the manifest with
+     its own `fetched_at`, leaving the snapshot date unchanged).
+   - Section 7's statement that solver concentration was out of scope was based
+     on a 200-transaction sample from the FastNear transactions API. Full blocks
+     do contain `token_diff` events, so (d) became possible.
+6. **Live dashboard (after results).** A daily CI job rebuilds the page on
+   freshly fetched data under the same rules, labelled as a live re-test. The
+   pinned, pre-registered build stays in the repository and at `/pinned/` on
+   the site.

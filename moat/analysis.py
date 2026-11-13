@@ -4,8 +4,8 @@ import datetime as dt
 import json
 import math
 
-from . import data, stats
-from .fetch import ROOT
+from . import chain, data, stats
+from .fetch import MANIFEST, ROOT
 from .sources import COMPETITORS, FEE_PAIRS, SOURCES, by_id
 
 D = dt.date
@@ -295,20 +295,20 @@ def t3(series, snap):
 def run():
     snap, series = data.load_snapshot()
     last_day = snap - dt.timedelta(1)
-    import json as _json
-    from .fetch import MANIFEST
-    manifest = _json.loads(MANIFEST.read_text())
+    manifest = json.loads(MANIFEST.read_text())
     rev_file = next(e["file"] for e in manifest["files"] if e["id"] == "intents_revenue")
-    revenue_raw = data.parse_chart(_json.loads((ROOT / rev_file).read_text()),
+    revenue_raw = data.parse_chart(json.loads((ROOT / rev_file).read_text()),
                                    before=snap, keep_zero=True)
 
     r1 = t1(series, revenue_raw, last_day)
     r2 = t2(series, last_day)
     r3 = t3(series, snap)
+    onchain = chain.run(series, snap)
     passes = sum(r["verdict"] == "PASS" for r in (r1, r2, r3))
     overall = {3: "Strong moat evidence", 2: "Moderate moat evidence"}.get(passes, "Weak moat evidence")
     return dict(snapshot_date=snap.isoformat(), fetched_at=manifest["fetched_at"],
                 tests=dict(t1=r1, t2=r2, t3=r3), passes=passes, overall=overall,
+                chain=onchain,
                 series=series, revenue_raw=revenue_raw)
 
 

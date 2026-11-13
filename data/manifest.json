@@ -106,6 +106,14 @@
       "file": "data/raw/bitget_volume.json",
       "bytes": 547352,
       "sha256": "b4e72e8991704bd19b4c5725b0097abe45cf8dafea8fc8610fddd891f9d22255"
+    },
+    {
+      "id": "near_price",
+      "url": "https://api.coingecko.com/api/v3/coins/near/market_chart?vs_currency=usd&days=365&interval=daily",
+      "file": "data/raw/near_price.json",
+      "bytes": 37947,
+      "sha256": "353165b52511d4ad7164afd36bdfc8f887abdd3f6dced38111da5ed841560f3a",
+      "fetched_at": "2026-11-13T06:11:49Z"
     }
   ]
 }

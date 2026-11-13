@@ -19,6 +19,8 @@ def load_snapshot():
     series = {}
     for e in manifest["files"]:
         raw = json.loads((ROOT / e["file"]).read_text())
+        if "prices" in raw:  # CoinGecko market_chart
+            raw = {"totalDataChart": [[t / 1000, v] for t, v in raw["prices"]]}
         series[e["id"]] = parse_chart(raw, before=snap)
     return snap, series
 

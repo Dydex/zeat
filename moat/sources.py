@@ -46,6 +46,10 @@ SOURCES = [
     dict(id="alldex_volume", role="donor", name="All DEX volume",
          url=f"{LLAMA}/overview/dexs?excludeTotalDataChartBreakdown=true&dataType=dailyVolume"),
 
+    # --- NEAR token price (for the issuance comparison only) ---------------
+    dict(id="near_price", role="price", name="NEAR price (CoinGecko)",
+         url="https://api.coingecko.com/api/v3/coins/near/market_chart?vs_currency=usd&days=365&interval=daily"),
+
     # --- contaminated: route part of their flow through NEAR Intents --------
     dict(id="lifi_volume", role="contaminated", name="LI.FI",
          url=f"{LLAMA}/summary/bridge-aggregators/li.fi-bridge-aggregator?dataType=dailyBridgeVolume"),

@@ -179,7 +179,17 @@ def render(res):
     def badge(v):
         return f"<span class='badge {v.lower()}'>{v}</span>"
 
+    import os
+    live = os.environ.get("MOAT_LIVE") == "1"
+    banner = (f"<p class='note'><b>Live rebuild</b> on public data fetched {html.escape(manifest['fetched_at'])}. "
+              "The pre-registered analysis is the pinned snapshot in the repository "
+              "(<a href='pinned/'>view the pinned build</a>). Verdicts here re-test the same rules on newer data.</p>"
+              if live else "")
+    from .facts import chain_facts
+    from .site_chain import sections
+    chain_html, near_html = sections(res, chain_facts(res), ordinal, month_label)
     page = TEMPLATE.format(
+        banner=banner, chain_html=chain_html, near_html=near_html,
         **f,
         b1=badge(t1["verdict"]), b2=badge(t2["verdict"]), b3=badge(t3["verdict"]),
         c_hist=c_hist, c_cap=c_cap,
@@ -254,6 +264,7 @@ a{{color:var(--c-primary)}}
 
 <p class="kicker">NEAR HACKATHON 2026 · Investment Thesis track · data snapshot {snapshot}</p>
 <h1>Moat Test: is NEAR Intents' revenue defensible?</h1>
+{banner}
 <p class="soft">Most NEAR theses ask how much Intents earns. An investor's next question is
 whether it can keep earning it. This page tests that three ways, each against a control
 built from competitors, so a market-wide move is never mistaken for a NEAR-specific one.
@@ -338,14 +349,17 @@ what users pay per dollar swapped on Intents with what they pay on native cross-
 Against THORChain and Chainflip over the {t3_sens_n} weeks both report, the trend is {t3_sens} a week.{t3_sens_note}</p>
 <p class="how">Share uses only competitors that report every week of the window, because a denominator that gains and loses venues would move on its own. T3 needs both a premium and steady share; the premium is missing, so T3 fails.</p>
 
+{chain_html}
+{near_html}
+
 <h2>Limits</h2>
 <ul>
 <li>All volume and fee data comes from DefiLlama, an aggregator. Its history can be revised; the
 snapshot hashes below pin the exact version analysed.</li>
 <li>The control pool is small (6 clean series), so placebo-in-space p-values cannot go below about 1/6.</li>
-<li>Solver concentration is not measured: a 200-transaction sample of recent <code>intents.near</code>
-activity contained no <code>token_diff</code> swap events, so solver identity is not observable reliably
-from public data without the Explorer API.</li>
+<li>The on-chain figures come from a sample of blocks, not a full census, so each weekly estimate carries
+sampling error (bootstrap intervals are in <code>results.json</code>). The sample is pinned in
+<code>data/onchain/</code> and can be checked against the chain with <code>python3 -m moat verify-onchain</code>.</li>
 <li>Six weeks of post-exploit data is the most the snapshot allows. T2 should be re-run as data arrives;
 <code>python3 -m moat refresh</code> then <code>build</code> does exactly that.</li>
 </ul>

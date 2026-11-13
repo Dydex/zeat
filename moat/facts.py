@@ -5,6 +5,7 @@ and everything here comes from the analysis results.
 """
 
 import datetime as dt
+import math
 
 
 def spct(x, nd=0):
@@ -132,3 +133,76 @@ def phrases(res):
         t3_share_word=("holding" if hi >= 0 and lo <= 0 else "rising" if lo > 0 else "falling"),
         switch_note=("the fee rate users paid stayed level" if price_flat else "the fee rate users paid changed"),
     )
+
+
+def usd_short(v):
+    if v is None:
+        return "n/a"
+    for div, s in ((1e9, "B"), (1e6, "M"), (1e3, "K")):
+        if abs(v) >= div:
+            return f"${v / div:.1f}{s}"
+    return f"${v:.0f}"
+
+
+def chain_facts(res):
+    """Facts from the on-chain sample. Empty strings when it is absent."""
+    c = res.get("chain")
+    if not c:
+        return dict(has_chain=False)
+    v = c["validation"]["intents_executed"]
+    e, pz, sv, eco, sup = c["exploit"], c["pause"], c["solvers"], c["economics"], c["supply"]
+    r_lvl, r_chg = v["corr_levels"], v["corr_changes"]
+    agree = "tracks" if (r_chg or 0) >= 0.5 else "loosely tracks" if (r_chg or 0) >= 0.2 else "does not track"
+    f = dict(
+        has_chain=True, blocks=c["blocks_sampled"], blocks_planned=c["blocks_planned"],
+        val_weeks=v["weeks"], val_r_levels=f"{r_lvl:.2f}" if r_lvl is not None else "n/a",
+        val_r_changes=f"{r_chg:.2f}" if r_chg is not None else "n/a", val_agree=agree,
+        ex_chain=spct(e["onchain_change"]), ex_llama=spct(e["defillama_change"]),
+        fs_chain=spct(c["feeswitch"]["onchain_change"]), fs_llama=spct(c["feeswitch"]["defillama_change"]),
+        fs_val_r_changes=(f"{c['validation_feeswitch']['intents_executed']['corr_changes']:.2f}"
+                          if c["validation_feeswitch"]["intents_executed"]["corr_changes"] is not None else "n/a"),
+    )
+    if e["onchain_change"] is not None and e["defillama_change"] is not None:
+        a, b = e["onchain_change"], e["defillama_change"]
+        same = (a < 0) == (b < 0)
+        gap = math.log1p(a) - math.log1p(b)
+        f["ex_agree"] = ("On-chain activity moved the opposite way" if not same
+                         else "On-chain activity moved the same way, far more strongly" if gap > math.log(1.5)
+                         else "On-chain activity moved the same way, far more weakly" if gap < -math.log(1.5)
+                         else "On-chain activity moved the same way")
+    else:
+        f["ex_agree"] = "On-chain coverage is incomplete for this comparison"
+    if pz:
+        f.update(pz_samples=pz["samples"], pz_run=pz["longest_zero_run"],
+                 pz_from=pz["zero_run_from"] or "n/a", pz_to=pz["zero_run_to"] or "n/a",
+                 pz_base=f"{pz['baseline_per_block']:.1f}" if pz["baseline_per_block"] else "n/a",
+                 pz_hours=f"{pz['longest_zero_run'] * 0.5:.1f}")
+        q, p = pz.get("zero_share_before"), pz.get("p_run_anywhere")
+        if q is not None and p is not None:
+            f["pz_note"] = (
+                f"Before Oct 1, {upct(q)} of sampled blocks already had none, so a run this long "
+                f"would appear somewhere in {pz['samples']} samples {upct(p)} of the time by chance. "
+                + ("It is unlikely to be chance, and it is consistent with a pause of a few hours."
+                   if p < 0.05 else
+                   "The sample is consistent with a pause of a few hours but cannot pin one down."))
+        else:
+            f["pz_note"] = ""
+    if sv:
+        f.update(sv_n=sv["repeat_counterparties"], sv_top1=upct(sv["top1"]), sv_top3=upct(sv["top3"]),
+                 sv_top5=upct(sv["top5"]), sv_hhi=f"{sv['hhi']:.2f}",
+                 sv_level=("highly concentrated" if sv["hhi"] > 0.25 else
+                           "moderately concentrated" if sv["hhi"] > 0.15 else "competitive"),
+                 sv_appear=sv["appearances"])
+    if sup and eco:
+        f.update(
+            supply_growth=upct(sup["growth"], 2), issued=f"{sup['issued'] / 1e6:.1f}M",
+            price=f"${eco['price_30d']:.2f}", issuance_usd=usd_short(eco["issuance_usd"]),
+            rev_annual=usd_short(eco["revenue_annual"]), fees_annual=usd_short(eco["fees_annual"]),
+            vol_annual=usd_short(eco["volume_annual"]), coverage=upct(eco["coverage"]),
+            capture_now=upct(eco["capture"]), needed_capture=upct(eco["needed_capture"]),
+            needed_vol=f"{eco['needed_volume_multiple']:.1f}×",
+            fee_bps_now=f"{eco['fee_bps']:.1f}",
+            capture_lever=("can cover issuance on its own" if eco["needed_capture"] <= 1
+                           else "cannot cover issuance on its own, even at 100% capture"),
+        )
+    return f

@@ -55,6 +55,26 @@ def refresh(log=print):
     return manifest
 
 
+def add(source_id, log=print):
+    """Fetch one source and add or replace its manifest entry, leaving every
+    other file (and the snapshot date) untouched. Each entry keeps its own
+    fetched_at, so a late addition is visible in the manifest."""
+    from .sources import by_id
+    s = by_id(source_id)
+    manifest = json.loads(MANIFEST.read_text())
+    body = _get(s["url"])
+    json.loads(body)
+    path = RAW / f"{s['id']}.json"
+    path.write_bytes(body)
+    entry = dict(id=s["id"], url=s["url"], file=str(path.relative_to(ROOT)), bytes=len(body),
+                 sha256=sha256(body),
+                 fetched_at=dt.datetime.now(dt.timezone.utc).replace(microsecond=0)
+                 .isoformat().replace("+00:00", "Z"))
+    manifest["files"] = [e for e in manifest["files"] if e["id"] != s["id"]] + [entry]
+    MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n")
+    log(f"added {s['id']} ({len(body):,d} bytes)")
+
+
 def verify(manifest=None):
     """Raise if any raw file is missing or differs from the manifest hash."""
     manifest = manifest or json.loads(MANIFEST.read_text())

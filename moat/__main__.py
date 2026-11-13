@@ -9,6 +9,9 @@ USAGE = """usage: python3 -m moat <command>
            results/results.json, site/index.html and THESIS.md (offline)
   refresh  download fresh data into data/raw and rewrite the manifest
   verify   check data/raw against data/manifest.json only
+
+  onchain          plan (if needed) and fetch the on-chain block sample (slow, resumable)
+  verify-onchain   re-fetch 20 random sampled blocks and check they match the chain
 """
 
 
@@ -21,6 +24,14 @@ def main(argv):
         from .fetch import verify
         m = verify()
         print(f"ok: {len(m['files'])} files match the manifest (snapshot {m['snapshot_date']})")
+    elif cmd == "onchain":
+        from . import onchain
+        if not onchain.PLAN.exists():
+            onchain.make_plan()
+        onchain.sample()
+    elif cmd == "verify-onchain":
+        from . import onchain
+        return 0 if onchain.verify(n=int(argv[2]) if len(argv) > 2 else 20) else 1
     elif cmd == "build":
         from . import analysis, site, thesis
         t = time.time()
