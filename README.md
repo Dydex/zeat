@@ -9,14 +9,17 @@ gets a placebo test.
 
 **Live dashboard:** <https://dydex.github.io/near/> · **Thesis:** [THESIS.md](THESIS.md) · **Pre-registration:** [METHODS.md](METHODS.md)
 
-> **For judges: a 60-second check.** Needs Python 3.10+ and nothing else.
-> ```bash
-> python3 -m moat verify && python3 -m moat build   # hashes match; every output rebuilt offline (~30s)
-> git status --short                                # empty: the build reproduces the committed files
-> python3 -m unittest                               # known-answer and byte-exact rebuild tests
-> python3 -m moat verify-onchain 5                  # re-reads 5 sampled NEAR blocks; must match the chain
-> git log --reverse --format='%h %ad %s' --date=iso # methods were committed before the results
-> ```
+> **For judges: a two-minute check.** Needs Python 3.10+ and nothing else (no installs, no keys).
+>
+> | Do | See |
+> |---|---|
+> | `python3 -m moat verify` | `ok: 16 files match the manifest (snapshot 2026-11-12)` |
+> | `python3 -m moat build` (offline, ~40 s) | `T1 PASS`, `T2 FAIL`, `T3 FAIL`, `verdict: Weak moat evidence (1/3)` |
+> | `git status --short` | no output: the build reproduced the committed results, dashboard and THESIS.md byte for byte |
+> | `python3 -m unittest` | `OK` (25 tests: known-answer, injected-effect recovery, byte-exact rebuild) |
+> | `python3 -m moat verify-onchain 5` | `verified 5/5 sampled blocks against the chain` (needs internet) |
+> | `git log --reverse --format='%h %ad %s' --date=iso` | METHODS.md (the pre-registration) was committed before any analysis code or result |
+> | open `site/index.html` or <https://dydex.github.io/near/> | the dashboard: verdict cards, each test's chart and placebo test, the on-chain check, the NEAR issuance comparison |
 
 | Test | Event | Question |
 |---|---|---|
@@ -34,10 +37,16 @@ gets a placebo test.
 - **Long-term NEAR case:** Intents revenue set against the value of NEAR issuance, and which
   revenue lever (cut, fee rate or volume) the moat tests say is safe to pull.
 
+**Track hints used.** *Onchain data:* 3,346 NEAR blocks read directly, plus NEAR Intents
+`token_diff` swap events. *Dashboards:* a static dashboard, rebuilt daily on fresh data by CI.
+*Research:* a pre-registered causal design with placebo inference. *NEAR's role:* the subject is
+NEAR Intents, the cross-chain settlement layer, and whether its fee revenue can offset NEAR's
+issuance.
+
 ## Run it
 
 ```bash
-python3 -m moat build     # offline, ~30s: verifies data hashes, runs all tests,
+python3 -m moat build     # offline, ~40s: verifies data hashes, runs T1-T3 and the on-chain analyses,
                           # writes results/results.json, site/index.html, THESIS.md
 python3 -m unittest       # the test suite, incl. known-answer checks and a byte-exact rebuild
 python3 -m moat refresh   # optional: fetch fresh public data, then build again
@@ -47,6 +56,7 @@ python3 -m moat onchain   # optional, slow: re-plan and re-fetch the whole block
 
 The dashboard is published by CI to GitHub Pages. Pushes publish the pinned build. A daily job
 publishes a **live** rebuild on fresh data under the same rules, and keeps the pinned build at `/pinned/`.
+The hosted dashboard stays up through judging and at least until 2026-11-25.
 
 Needs Python 3.10+ and nothing else: standard library only, no API keys, no installs.
 `make`, `make test` and `make refresh` do the same.
