@@ -252,7 +252,7 @@ def copy_docs():
 
 
 CSS = """
-:root{--bg:#fbfaf7;--fg:#1b1a17;--soft:#56534c;--faint:#85817a;--line:#e4e0d6;--rule:#cfcabe;
+:root{color-scheme:light dark;--bg:#fbfaf7;--fg:#1b1a17;--soft:#56534c;--faint:#85817a;--line:#e4e0d6;--rule:#cfcabe;
 --card:#ffffff;--tint:#f3f0e8;--link:#1d5fc4;
 --c-primary:#1f6feb;--c-control:#b4540a;--c-muted:#99958b;--c-accent:#1a7f5a;--c-bad:#c62828;
 --pass:#17734f;--fail:#b42318;
@@ -365,6 +365,29 @@ transform:rotate(-45deg);transition:transform .15s;margin:0 4px 0 2px}
 details[open] summary::before{transform:rotate(45deg)}
 summary span{font-weight:400;color:var(--faint)}
 details>div{padding:2px 0 14px}
+/* scenario calculator */
+.calc{background:var(--tint);border-radius:8px;padding:2px 22px 20px}
+.calc .fig-title{border-top:0;padding-top:16px}
+.calc-intro{font:14.5px/1.55 var(--sans);color:var(--soft);margin:0 0 14px}
+.calc-big{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;font:700 46px/1.05 var(--sans);
+font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.calc-big small{font:500 15px/1.4 var(--sans);color:var(--soft);letter-spacing:0}
+.meter{position:relative;height:10px;border-radius:5px;background:var(--line);margin:16px 0 30px}
+.meter i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:5px;background:var(--c-primary);transition:width .15s}
+.meter .mark{position:absolute;left:50%;top:-5px;height:20px;border-left:2px solid var(--fg)}
+.meter .mark span{position:absolute;top:21px;left:-60px;width:120px;text-align:center;font:600 11.5px var(--sans);color:var(--soft)}
+.calc-line{font:15px/1.5 var(--sans);margin:0 0 18px}
+.calc-in{display:grid;gap:16px;margin:0 0 18px;padding-top:16px;border-top:1px solid var(--rule)}
+.calc-in label{display:grid;grid-template-columns:190px minmax(0,1fr) 92px;align-items:center;gap:16px;font:600 14.5px/1.3 var(--sans)}
+.calc-in em{display:block;font-style:normal;font-weight:400;font-size:12.5px;color:var(--faint);margin-top:2px}
+.calc-in input{width:100%;margin:0;accent-color:var(--c-primary);min-height:28px}
+.calc-in output{text-align:right;font-variant-numeric:tabular-nums}
+.calc-need{font:14.5px/1.6 var(--sans);margin:0 0 14px}
+.calc-reset{font:600 13.5px var(--sans);padding:8px 15px;border-radius:999px;border:1px solid var(--rule);
+background:var(--card);color:var(--fg);cursor:pointer}
+@media (max-width:600px){.calc{padding:2px 16px 18px}.calc-big{font-size:38px}
+.calc-in label{grid-template-columns:minmax(0,1fr) auto;row-gap:6px}
+.calc-in input{grid-column:1/-1;grid-row:2}}
 code{font:.84em var(--mono);background:var(--tint);padding:1px 5px;border-radius:3px}
 pre{background:var(--tint);border-radius:6px;padding:16px 18px;overflow-x:auto;font-size:14px;line-height:1.6}
 pre code,td code{background:none;padding:0}
@@ -466,6 +489,31 @@ var bar=document.querySelector('.mnav-bar i'),ticking=false;
 function prog(){var h=document.documentElement.scrollHeight-innerHeight;
   if(bar)bar.style.width=(h>0?Math.min(100,scrollY/h*100):0)+'%';ticking=false}
 addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(prog)}},{passive:true});prog();
+var calc=document.querySelector('figure.calc');
+if(calc){
+  var A=function(k){return +calc.getAttribute('data-'+k)},vol=A('vol'),issued=A('issued'),exact=true;
+  var ins={},outs={};
+  calc.querySelectorAll('[data-i]').forEach(function(e){ins[e.getAttribute('data-i')]=e});
+  calc.querySelectorAll('[data-o]').forEach(function(e){outs[e.getAttribute('data-o')]=e});
+  function usd(v){return v>=1e9?'$'+(v/1e9).toFixed(1)+'B':v>=1e6?'$'+(v/1e6).toFixed(1)+'M':'$'+Math.round(v/1e3)+'K'}
+  function pct(v){return v<1?(v<0.1?(Math.floor(v*1000)/10).toFixed(1):Math.floor(v*100))+'%':Math.round(v*100).toLocaleString('en-US')+'%'}
+  function upd(){
+    var vm=+ins.vm.value,bps=exact?A('bps'):+ins.bps.value,cut=exact?A('cut'):+ins.cut.value/100,px=exact?A('px'):+ins.px.value;
+    var v=vol*vm,fees=v*bps/1e4,rev=fees*cut,iss=issued*px,cov=rev/iss;
+    outs.vm.textContent='×'+vm.toFixed(1);outs.bps.textContent=bps.toFixed(1)+' bps';
+    outs.cut.textContent=Math.round(cut*100)+'%';outs.px.textContent='$'+px.toFixed(2);
+    outs.cov.textContent=pct(cov);outs.bar.style.width=Math.min(cov/2,1)*100+'%';
+    outs.line.textContent=usd(rev)+' a year of revenue against '+usd(iss)+' a year of issuance, on '+usd(v)+' of annual volume.';
+    var needCut=iss/fees;
+    outs.need.innerHTML=cov>=1?'<b>At these settings Intents revenue covers NEAR issuance.</b>':
+      'To cover issuance with the other levers as set, volume would need to reach <b>×'+(vm/cov).toFixed(1)+
+      '</b> today’s level, or NEAR’s cut <b>'+Math.round(needCut*100)+'%</b>'+(needCut>1?', which is impossible above 100%':'')+'.';
+  }
+  Object.keys(ins).forEach(function(k){ins[k].addEventListener('input',function(){exact=false;upd()})});
+  calc.querySelector('.calc-reset').addEventListener('click',function(){
+    Object.keys(ins).forEach(function(k){ins[k].value=ins[k].defaultValue});exact=true;upd()});
+  upd();
+}
 })();
 """
 

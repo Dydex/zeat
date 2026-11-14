@@ -19,7 +19,7 @@ gets a placebo test.
 > | `python3 -m unittest` | `OK` (25 tests: known-answer, injected-effect recovery, byte-exact rebuild) |
 > | `python3 -m zeat verify-onchain 5` | `verified 5/5 sampled blocks against the chain` (needs internet) |
 > | `git log --reverse --format='%h %ad %s' --date=iso` | METHODS.md (the pre-registration) was committed before any analysis code or result |
-> | open `site/index.html` or <https://dydex.github.io/zeat/> | the research note: abstract and results table (Table 1), one numbered section per test with its figures and placebo tests, the on-chain check, the NEAR issuance comparison. Hover any chart for exact values |
+> | open `site/index.html` or <https://dydex.github.io/zeat/> | the research note: abstract and results table (Table 1), one numbered section per test with its figures and placebo tests, the on-chain check, the NEAR issuance comparison with a scenario calculator (Figure 14). Hover any chart for exact values |
 
 | Test | Event | Question |
 |---|---|---|
@@ -34,8 +34,9 @@ gets a placebo test.
 - **On-chain layer:** about 3,350 NEAR blocks are read directly, with no keys. They check the
   aggregator against the chain, look for the Oct 1 pause, measure solver concentration from
   `token_diff` swap events, and read NEAR's exact annual issuance from block headers.
-- **Long-term NEAR case:** Intents revenue set against the value of NEAR issuance, and which
-  revenue lever (cut, fee rate or volume) the moat tests say is safe to pull.
+- **Long-term NEAR case:** Intents revenue set against the value of NEAR issuance, which
+  revenue lever (cut, fee rate or volume) the tests say is safe to pull, and a scenario calculator
+  that starts from the built values.
 
 **Track hints used.** *Onchain data:* 3,346 NEAR blocks read directly, plus NEAR Intents
 `token_diff` swap events. *Dashboards:* a static dashboard, rebuilt daily on fresh data by CI.

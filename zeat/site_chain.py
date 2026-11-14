@@ -49,7 +49,16 @@ def sections(res, f, ordinal, month_label, week_of):
         f"<td class='num'>{r['share']:.1%}</td></tr>" for r in (sv["top"] if sv else []))
     chain_html = CHAIN.format(c_val=c_val, c_pause=c_pause, solver_rows=solver_rows,
                               **{k: f.get(k, "n/a") for k in KEYS})
-    near_html = NEAR.format(**{k: f.get(k, "n/a") for k in KEYS}) if c.get("economics") else ""
+    near_html = ""
+    eco = c.get("economics")
+    if eco:
+        attrs = " ".join(f'data-{k}="{v:.6g}"' for k, v in (
+            ("vol", eco["volume_annual"]), ("issued", eco["issued_per_year"]), ("bps", eco["fee_bps"]),
+            ("cut", eco["capture"]), ("px", eco["price_30d"])))
+        near_html = NEAR.format(
+            calc_attrs=attrs, d_bps=f"{eco['fee_bps']:.1f}", d_cut=f"{round(eco['capture'] * 100)}",
+            d_price=f"{eco['price_30d']:.2f}", issued_yr=f"{eco['issued_per_year'] / 1e6:.1f}M NEAR",
+            **{k: f.get(k, "n/a") for k in KEYS})
     return chain_html, near_html
 
 
@@ -142,6 +151,25 @@ Covering issuance is a yardstick for value accrual, not a claim about how buybac
 <tr><td>Fee rate<small>{fee_bps_now} bps</small></td><td>T3: Intents is already cheaper than rivals and has no premium to spend; raising it is untested.</td></tr>
 <tr><td>Volume</td><td>T2: volume is the lever exposed to trust. Growth of {needed_vol} has to come from users who stay through incidents.</td></tr>
 </tbody></table></div>
+</figure>
+<figure class="calc" {calc_attrs}>
+<p class="fig-title"><span class="fig-num">Figure 14</span>What it takes: a scenario calculator</p>
+<p class="calc-intro">Starts from today's values in Table 3. Move the levers to see how much of NEAR's issuance
+Intents revenue would cover.</p>
+<div class="calc-big"><span data-o="cov">{coverage}</span><small>of NEAR issuance value covered by Intents revenue</small></div>
+<div class="meter" aria-hidden="true"><i data-o="bar"></i><span class="mark"><span>covers issuance</span></span></div>
+<p class="calc-line" data-o="line">{rev_annual} a year of revenue against {issuance_usd} a year of issuance.</p>
+<div class="calc-in">
+<label><span>Volume<em>T2: the lever exposed to trust</em></span><input type="range" min="0.5" max="10" step="0.1" value="1" data-i="vm"><output data-o="vm">×1.0</output></label>
+<label><span>Fee rate<em>T3: no premium today</em></span><input type="range" min="5" max="40" step="0.1" value="{d_bps}" data-i="bps"><output data-o="bps">{d_bps} bps</output></label>
+<label><span>NEAR's cut<em>T1: raised without losing volume</em></span><input type="range" min="0" max="100" step="1" value="{d_cut}" data-i="cut"><output data-o="cut">{d_cut}%</output></label>
+<label><span>NEAR price<em>sets the value of issuance</em></span><input type="range" min="1" max="20" step="0.05" value="{d_price}" data-i="px"><output data-o="px">${d_price}</output></label>
+</div>
+<p class="calc-need" data-o="need"></p>
+<button type="button" class="calc-reset">Reset to today</button>
+<figcaption><p class="src">Revenue = annual volume × fee rate × NEAR's cut; issuance value = NEAR minted per year
+({issued_yr}, from block headers) × price. A scenario tool, not a result or a forecast: it treats the levers as
+independent, though a higher fee rate could cost volume.</p></figcaption>
 </figure>
 </section>
 """
