@@ -492,7 +492,7 @@ TEMPLATE = """<!doctype html>
 <p class="kicker">Zeat · Research note · NEAR HACKATHON 2026 · Investment Thesis track</p>
 <h1>Is NEAR Intents' revenue defensible?</h1>
 <p class="dek">{dek}</p>
-<p class="byline"><b>Dydex</b> · Data snapshot {snapshot} · <a href="{repo}">Code</a> ·
+<p class="byline"><b>Dydex</b> · Data snapshot {snapshot} · <a href="https://x.com/dp7954/status/2121525982582702471">Demo video</a> · <a href="{repo}">Code</a> ·
 <a href="METHODS.md">Pre-registration</a> · <a href="THESIS.md">Thesis</a> · <a href="results.json">All numbers (JSON)</a></p>
 {banner}
 </header>

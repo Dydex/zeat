@@ -7,7 +7,7 @@ question: **can it keep earning it?** A synthetic control built from competitors
 counterfactual, so market-wide moves are never mistaken for NEAR-specific ones. Each claim
 gets a placebo test.
 
-**Live research note:** <https://dydex.github.io/zeat/> · **Thesis:** [THESIS.md](THESIS.md) · **Pre-registration:** [METHODS.md](METHODS.md)
+**Demo video:** <https://x.com/dp7954/status/2121525982582702471> · **Live research note:** <https://dydex.github.io/zeat/> · **Thesis:** [THESIS.md](THESIS.md) · **Pre-registration:** [METHODS.md](METHODS.md)
 
 > **For judges: a two-minute check.** Needs Python 3.10+ and nothing else (no installs, no keys).
 >
